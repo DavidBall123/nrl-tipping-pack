@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  tipper:
+    build: .
+    container_name: nrl-tipping-pack
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    restart: unless-stopped
