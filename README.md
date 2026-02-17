@@ -41,6 +41,7 @@ Key env vars:
 - Reddit endpoint uses public JSON feed (`/r/nrl/new.json`) with a user-agent.
 - Odds integration is implemented with The Odds API by default provider interface. You can add extra providers in `src/services/odds.ts`.
 - If you scrape bookmaker websites directly, validate each site's terms and local regulations before use.
+- Companion note: maintained with help from **Rook** (your OpenClaw assistant).
 
 ## Project layout
 
