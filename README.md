@@ -31,6 +31,11 @@ Node/TypeScript service that:
 Key env vars:
 - `ODDS_PROVIDER`: `mock` or `theoddsapi`
 - `ODDS_API_KEY`: required when using `theoddsapi`
+- `REDDIT_CLIENT_ID`: Reddit app client id (script app)
+- `REDDIT_CLIENT_SECRET`: Reddit app client secret
+- `REDDIT_USERNAME`: Reddit account username
+- `REDDIT_PASSWORD`: Reddit account password
+- `REDDIT_USER_AGENT`: required descriptive user agent for Reddit API usage
 - `CHATTER_LOOKBACK_HOURS`: Reddit post lookback window
 - `MIN_CONFIDENCE`: minimum confidence for emitted picks
 - `SQLITE_PATH`: SQLite file path
@@ -38,7 +43,7 @@ Key env vars:
 
 ## Notes
 
-- Reddit endpoint uses public JSON feed (`/r/nrl/new.json`) with a user-agent.
+- Reddit ingestion uses OAuth (`oauth.reddit.com`) with script-app credentials.
 - Odds integration is implemented with The Odds API by default provider interface. You can add extra providers in `src/services/odds.ts`.
 - If you scrape bookmaker websites directly, validate each site's terms and local regulations before use.
 - Companion note: maintained with help from **Rook** (your OpenClaw assistant).

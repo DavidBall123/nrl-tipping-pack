@@ -19,10 +19,53 @@ type RedditListingResponse = {
   };
 };
 
+type RedditTokenResponse = {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  scope: string;
+};
+
+let redditAccessToken: string | null = null;
+let redditAccessTokenExpiresAtMs = 0;
+
+async function getRedditAccessToken(): Promise<string> {
+  const now = Date.now();
+  if (redditAccessToken && now < redditAccessTokenExpiresAtMs) {
+    return redditAccessToken;
+  }
+
+  const response = await axios.post<RedditTokenResponse>(
+    "https://www.reddit.com/api/v1/access_token",
+    new URLSearchParams({
+      grant_type: "password",
+      username: env.REDDIT_USERNAME,
+      password: env.REDDIT_PASSWORD
+    }),
+    {
+      auth: {
+        username: env.REDDIT_CLIENT_ID,
+        password: env.REDDIT_CLIENT_SECRET
+      },
+      headers: {
+        "User-Agent": env.REDDIT_USER_AGENT,
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      timeout: 10_000
+    }
+  );
+
+  redditAccessToken = response.data.access_token;
+  redditAccessTokenExpiresAtMs = Date.now() + Math.max((response.data.expires_in - 60) * 1000, 60_000);
+  return redditAccessToken;
+}
+
 export async function collectTeamChatter(): Promise<TeamChatter[]> {
-  const url = `https://www.reddit.com/r/nrl/new.json?limit=${env.REDDIT_LIMIT}`;
+  const token = await getRedditAccessToken();
+  const url = `https://oauth.reddit.com/r/nrl/new?limit=${env.REDDIT_LIMIT}`;
   const response = await axios.get<RedditListingResponse>(url, {
     headers: {
+      Authorization: `Bearer ${token}`,
       "User-Agent": env.REDDIT_USER_AGENT
     },
     timeout: 10_000
